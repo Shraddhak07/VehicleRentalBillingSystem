@@ -27,8 +27,9 @@ namespace VehicleRentalApp
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
             MinimizeBox = false;
-            AcceptButton = new Button { Text = "OK", DialogResult = DialogResult.OK };
-            Controls.Add(AcceptButton);
+            var okButton = new Button { Text = "OK", DialogResult = DialogResult.OK };
+            AcceptButton = okButton;
+            Controls.Add(okButton);
         }
     }
 }

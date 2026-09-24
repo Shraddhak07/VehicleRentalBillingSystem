@@ -70,7 +70,7 @@ namespace VehicleRentalApp
 
         private void BtnChangePassword_Click(object sender, EventArgs e)
         {
-            using (var cp = new frmChangePassword { Username = txtUsername.Text.Trim() })
+            using (var cp = new frmChangePassword(txtUsername.Text.Trim()))
             {
                 cp.ShowDialog();
             }

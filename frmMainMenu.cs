@@ -46,7 +46,7 @@ namespace VehicleRentalApp
             AddButton("Revenue Report", (s, e) => { var f = new frmRevenueReport(); f.MdiParent = this; f.Show(); });
             AddButton("Expense Report", (s, e) => { var f = new frmExpenseReport(); f.MdiParent = this; f.Show(); });
             AddButton("Vehicle Availability", (s, e) => { var f = new frmVehicleAvailability(); f.MdiParent = this; f.Show(); });
-            AddButton("Change Password", (s, e) => { var f = new frmChangePassword { Username = Program.CurrentUsername }; f.ShowDialog(); });
+            AddButton("Change Password", (s, e) => { var f = new frmChangePassword(Program.CurrentUsername); f.ShowDialog(); });
             AddButton("About", (s, e) => { var f = new frmAbout(); f.ShowDialog(); });
 
             var btnExit = new Button { Text = "Exit", AutoSize = true, Margin = new Padding(5), Font = new Font("Segoe UI", 10F) };

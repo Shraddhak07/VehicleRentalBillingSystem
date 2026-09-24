@@ -9,10 +9,11 @@ namespace VehicleRentalApp
         private Label lblOld, lblNew, lblConfirm;
         private TextBox txtOld, txtNew, txtConfirm;
         private Button btnSave;
-        public string Username { get; set; }
+        private readonly string _username;
 
-        public frmChangePassword()
+        public frmChangePassword(string username)
         {
+            _username = username;
             InitializeComponent();
         }
 
@@ -48,7 +49,7 @@ namespace VehicleRentalApp
                     return;
                 }
 
-                DatabaseHelper.UpdatePassword(Username, txtNew.Text);
+                DatabaseHelper.UpdatePassword(_username, txtNew.Text);
                 MessageBox.Show("Password updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;
                 Close();
