@@ -14,6 +14,7 @@ namespace VehicleRentalApp
 
         public frmSplash()
         {
+            System.IO.File.AppendAllText("applog.txt", "frmSplash constructor called\r\n");
             InitializeComponent();
             Load += frmSplash_Load;
         }
@@ -74,6 +75,7 @@ namespace VehicleRentalApp
 
         private void frmSplash_Load(object sender, EventArgs e)
         {
+            System.IO.File.AppendAllText("applog.txt", "Splash load\r\n");
             timer1.Start();
         }
 
@@ -92,10 +94,14 @@ namespace VehicleRentalApp
 
         private void ShowLogin()
         {
+            System.IO.File.AppendAllText("applog.txt", "ShowLogin called\r\n");
             Close();
+            System.IO.File.AppendAllText("applog.txt", "Splash closed\r\n");
             using (var login = new frmLogin())
             {
-                if (login.ShowDialog() == DialogResult.OK)
+                var result = login.ShowDialog();
+                System.IO.File.AppendAllText("applog.txt", "DialogResult: " + result + "\r\n");
+                if (result == DialogResult.OK)
                 {
                     Application.Run(new frmMainMenu());
                 }

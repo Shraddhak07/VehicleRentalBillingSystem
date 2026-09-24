@@ -1,0 +1,54 @@
+Splash load
+ShowLogin called
+Splash closed
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+frmLogin constructor called
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+frmLogin constructor called
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+frmLogin constructor called
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+frmLogin constructor called
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+frmLogin constructor called
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+DialogResult: Cancel
+frmSplash constructor called
+Splash load
+ShowLogin called
+Splash closed
+DialogResult: Cancel
