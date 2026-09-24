@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace VehicleRentalApp
@@ -11,56 +10,23 @@ namespace VehicleRentalApp
         private Label lblSubtitle;
         private Timer timer1;
         private ProgressBar progressBar;
-        private Panel headerPanel;
+        private Label lblLoading;
 
-        public frmSplash() => InitializeComponent();
+        public frmSplash()
+        {
+            InitializeComponent();
+            Load += frmSplash_Load;
+        }
 
         private void InitializeComponent()
         {
-            headerPanel = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 180,
-                BackColor = Theme.PrimaryColor
-            };
-
             lblTitle = new Label
-            {
-                Text = "VEHICLE RENTAL",
-                Font = new Font("Segoe UI", 28F, FontStyle.Bold),
-                ForeColor = Color.White,
-                Dock = DockStyle.Top,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Height = 50,
-                Padding = new Padding(0, 25, 0, 0)
-            };
-
-            lblSubtitle = new Label
-            {
-                Text = "& BILLING SYSTEM",
-                Font = new Font("Segoe UI", 16F, FontStyle.Regular),
-                ForeColor = Color.FromArgb(200, 220, 255),
-                Dock = DockStyle.Top,
-                TextAlign = ContentAlignment.MiddleCenter,
-                Height = 40
-            };
-
-            headerPanel.Controls.Add(lblSubtitle);
-            headerPanel.Controls.Add(lblTitle);
-
-            var contentPanel = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BackColor = Theme.BackgroundColor
-            };
-
-            var lblTitle2 = new Label
             {
                 Text = "VEHICLE RENTAL & BILLING",
                 Font = Theme.TitleFont,
                 ForeColor = Theme.PrimaryColor,
                 AutoSize = true,
-                Location = new Point(200, 60)
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 400) / 2, 120)
             };
 
             lblSubtitle = new Label
@@ -69,39 +35,38 @@ namespace VehicleRentalApp
                 Font = Theme.HeadingFont,
                 ForeColor = Theme.TextLight,
                 AutoSize = true,
-                Location = new Point(240, 100)
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 200) / 2, 170)
             };
 
             progressBar = new ProgressBar
             {
                 Width = 300,
                 Height = 8,
-                Location = new Point(200, 160),
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 300) / 2, 220),
                 Style = ProgressBarStyle.Continuous,
                 Maximum = 100,
                 Value = 0
             };
 
-            var loadingLabel = new Label
+            lblLoading = new Label
             {
                 Text = "Loading...",
                 Font = Theme.BodyFont,
                 ForeColor = Theme.TextLight,
                 AutoSize = true,
-                Location = new Point(220, 175)
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 100) / 2, 235)
             };
-
-            contentPanel.Controls.Add(loadingLabel);
-            contentPanel.Controls.Add(progressBar);
-            contentPanel.Controls.Add(lblSubtitle);
-            contentPanel.Controls.Add(lblTitle);
-            Controls.Add(contentPanel);
 
             timer1 = new Timer { Interval = 30 };
             timer1.Tick += Timer1_Tick;
 
+            Controls.Add(lblTitle);
+            Controls.Add(lblSubtitle);
+            Controls.Add(progressBar);
+            Controls.Add(lblLoading);
+
             Text = "Vehicle Rental & Billing System";
-            StartPosition = FormStartPosition.CenterScreen;
+            StartPosition = FormStartPosition.Manual;
             WindowState = FormWindowState.Maximized;
             FormBorderStyle = FormBorderStyle.None;
             BackColor = Theme.BackgroundColor;
@@ -110,7 +75,6 @@ namespace VehicleRentalApp
         private void frmSplash_Load(object sender, EventArgs e)
         {
             timer1.Start();
-            lblTitle.Parent = this;
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
