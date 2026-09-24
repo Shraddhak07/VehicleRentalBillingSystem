@@ -54,11 +54,9 @@ namespace VehicleRentalApp
             staffName = null;
             using var conn = GetOpenConnection();
             using var cmd = new OleDbCommand(
-                "SELECT StaffName FROM Users WHERE Username=? AND Password=?", conn)
-            {
-                { cmd.Parameters.AddWithValue("?", username); },
-                { cmd.Parameters.AddWithValue("?", password); },
-            };
+                "SELECT StaffName FROM Users WHERE Username=? AND Password=?", conn);
+            cmd.Parameters.AddWithValue("?", username);
+            cmd.Parameters.AddWithValue("?", password);
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
@@ -72,11 +70,9 @@ namespace VehicleRentalApp
         {
             using var conn = GetOpenConnection();
             using var cmd = new OleDbCommand(
-                "UPDATE Users SET Password=? WHERE Username=?", conn)
-            {
-                { cmd.Parameters.AddWithValue("?", newPassword); },
-                { cmd.Parameters.AddWithValue("?", username); },
-            };
+                "UPDATE Users SET Password=? WHERE Username=?", conn);
+            cmd.Parameters.AddWithValue("?", newPassword);
+            cmd.Parameters.AddWithValue("?", username);
             cmd.ExecuteNonQuery();
         }
 
