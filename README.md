@@ -3,9 +3,10 @@
 A simple Windows Forms application for college projects.
 
 ## Stack
-- Frontend: C# Windows Forms (.NET 9)
+- Frontend: C# Windows Forms (.NET 9) with modern dark-blue theme styling
 - Backend: Microsoft Access database with `System.Data.OleDb`
 - Optional SQL Server DDL scripts are included.
+- UI: Themed controls, styled buttons, gradient headers, DataGridView styling
 
 ## Files
 - `VehicleRentalApp.csproj` - Project file

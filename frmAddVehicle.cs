@@ -9,49 +9,66 @@ namespace VehicleRentalApp
     {
         private TextBox txtName, txtCategory, txtRate, txtStatus;
         private Button btnAdd;
+        private Label lblTitle;
 
         public frmAddVehicle() => InitializeComponent();
 
         private void InitializeComponent()
         {
-            var tlp = new TableLayoutPanel
+            lblTitle = new Label
             {
-                ColumnCount = 2,
-                RowCount = 5,
-                Dock = DockStyle.Top,
+                Text = "Add Vehicle",
+                Font = Theme.TitleFont,
+                ForeColor = Theme.PrimaryColor,
                 AutoSize = true,
-                Padding = new Padding(10)
+                Location = new Point(20, 20)
             };
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300));
 
-            tlp.Controls.Add(new Label { Text = "Vehicle Name:", AutoSize = true }, 0, 0);
-            txtName = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtName, 1, 0);
+            var formPanel = new Panel
+            {
+                Size = new Size(500, 400),
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 500) / 2, (Screen.PrimaryScreen.Bounds.Height - 400) / 2),
+                BackColor = Theme.CardColor,
+                BorderStyle = BorderStyle.FixedSingle
+            };
 
-            tlp.Controls.Add(new Label { Text = "Category:", AutoSize = true }, 0, 1);
-            txtCategory = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtCategory, 1, 1);
+            void AddInput(Label label, TextBox textBox, int y)
+            {
+                label.ForeColor = Theme.TextColor;
+                label.Font = Theme.HeadingFont;
+                label.AutoSize = true;
+                label.Location = new Point(40, y);
+                textBox.Width = 400;
+                textBox.Location = new Point(40, y + 35);
+                textBox.Font = Theme.BodyFont;
+                textBox.BorderStyle = BorderStyle.FixedSingle;
+                formPanel.Controls.Add(label);
+                formPanel.Controls.Add(textBox);
+            }
 
-            tlp.Controls.Add(new Label { Text = "Per Day Rate:", AutoSize = true }, 0, 2);
-            txtRate = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtRate, 1, 2);
+            txtName = new TextBox();
+            txtCategory = new TextBox();
+            txtRate = new TextBox();
+            txtStatus = new TextBox { Text = "Available" };
 
-            tlp.Controls.Add(new Label { Text = "Status:", AutoSize = true }, 0, 3);
-            txtStatus = new TextBox { Width = 300, Text = "Available" };
-            tlp.Controls.Add(txtStatus, 1, 3);
+            AddInput(new Label { Text = "Vehicle Name:" }, txtName, 80);
+            AddInput(new Label { Text = "Category:" }, txtCategory, 155);
+            AddInput(new Label { Text = "Per Day Rate:" }, txtRate, 230);
+            AddInput(new Label { Text = "Status:" }, txtStatus, 305);
 
-            btnAdd = new Button { Text = "Add Vehicle", Width = 150 };
+            btnAdd = new Button { Text = "Add Vehicle", Width = 200, Location = new Point(150, 350) };
+            Theme.ApplyButtonStyle(btnAdd);
+            btnAdd.FlatAppearance.MouseOverBackColor = Theme.PrimaryLight;
             btnAdd.Click += BtnAdd_Click;
-            tlp.Controls.Add(btnAdd, 1, 4);
+            formPanel.Controls.Add(btnAdd);
 
-            Controls.Add(tlp);
-            Text = "Add Vehicle";
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            AcceptButton = btnAdd;
+            Controls.Add(formPanel);
+            Controls.Add(lblTitle);
+            Text = "Add Vehicle - Vehicle Rental";
+            StartPosition = FormStartPosition.Manual;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Theme.BackgroundColor;
+            WindowState = FormWindowState.Maximized;
         }
 
         private void BtnAdd_Click(object sender, EventArgs e)
@@ -66,12 +83,10 @@ namespace VehicleRentalApp
                 cmd.Parameters.AddWithValue("?", decimal.Parse(txtRate.Text));
                 cmd.Parameters.AddWithValue("?", txtStatus.Text);
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Vehicle added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Vehicle added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtName.Clear(); txtCategory.Clear(); txtRate.Clear(); txtStatus.Text = "Available";
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
     }
 }

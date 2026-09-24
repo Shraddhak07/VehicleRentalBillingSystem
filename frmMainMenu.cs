@@ -1,22 +1,39 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace VehicleRentalApp
 {
     public partial class frmMainMenu : Form
     {
-        public frmMainMenu()
-        {
-            InitializeComponent();
-        }
+        public frmMainMenu() => InitializeComponent();
 
         private void InitializeComponent()
         {
             IsMdiContainer = true;
-            Text = "Vehicle Rental & Billing System - Main Menu";
+            Text = "Vehicle Rental & Billing System";
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.Manual;
+            BackColor = Theme.BackgroundColor;
+
+            var menuStrip = new MenuStrip
+            {
+                RenderMode = ToolStripRenderMode.Professional,
+                BackColor = Theme.PrimaryColor,
+                ForeColor = Color.White,
+                Height = 40
+            };
+
+            var fileMenu = new ToolStripDropDownButton("File");
+            fileMenu.ForeColor = Color.White;
+            fileMenu.Click += (s, e) => Application.Exit();
+            menuStrip.Items.Add(fileMenu);
+
+            var helpMenu = new ToolStripDropDownButton("Help");
+            helpMenu.ForeColor = Color.White;
+            helpMenu.Click += (s, e) => { var f = new frmAbout(); f.ShowDialog(); };
+            menuStrip.Items.Add(helpMenu);
 
             var panel = new FlowLayoutPanel
             {
@@ -25,34 +42,63 @@ namespace VehicleRentalApp
                 AutoSizeMode = AutoSizeMode.GrowAndShrink,
                 FlowDirection = FlowDirection.LeftToRight,
                 WrapContents = false,
-                Padding = new Padding(10, 10, 10, 10)
+                Padding = new Padding(15, 15, 15, 15),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
             };
 
-            void AddButton(string text, EventHandler handler)
+            void AddCard(string text, Color color, EventHandler handler)
             {
-                var btn = new Button { Text = text, AutoSize = true, Margin = new Padding(5), Font = new Font("Segoe UI", 10F) };
+                var btn = new Button
+                {
+                    Text = text,
+                    AutoSize = true,
+                    Margin = new Padding(8),
+                    Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                    BackColor = color,
+                    FlatStyle = FlatStyle.Flat,
+                    Cursor = Cursors.Hand,
+                    Padding = new Padding(20, 12, 20, 12)
+                };
+                btn.FlatAppearance.BorderSize = 0;
+                btn.FlatAppearance.MouseOverBackColor = Theme.PrimaryLight;
                 btn.Click += handler;
                 panel.Controls.Add(btn);
             }
 
-            AddButton("Add Vehicle", (s, e) => { var f = new frmAddVehicle(); f.MdiParent = this; f.Show(); });
-            AddButton("Manage Vehicles", (s, e) => { var f = new frmManageVehicles(); f.MdiParent = this; f.Show(); });
-            AddButton("Add Customer", (s, e) => { var f = new frmAddCustomer(); f.MdiParent = this; f.Show(); });
-            AddButton("Manage Customers", (s, e) => { var f = new frmManageCustomers(); f.MdiParent = this; f.Show(); });
-            AddButton("Book Rental", (s, e) => { var f = new frmBookRental(); f.MdiParent = this; f.Show(); });
-            AddButton("Return Vehicle", (s, e) => { var f = new frmReturnVehicle(); f.MdiParent = this; f.Show(); });
-            AddButton("Maintenance Expenses", (s, e) => { var f = new frmMaintenanceExpenses(); f.MdiParent = this; f.Show(); });
-            AddButton("Rental History", (s, e) => { var f = new frmRentalHistory(); f.MdiParent = this; f.Show(); });
-            AddButton("Revenue Report", (s, e) => { var f = new frmRevenueReport(); f.MdiParent = this; f.Show(); });
-            AddButton("Expense Report", (s, e) => { var f = new frmExpenseReport(); f.MdiParent = this; f.Show(); });
-            AddButton("Vehicle Availability", (s, e) => { var f = new frmVehicleAvailability(); f.MdiParent = this; f.Show(); });
-            AddButton("Change Password", (s, e) => { var f = new frmChangePassword(Program.CurrentUsername); f.ShowDialog(); });
-            AddButton("About", (s, e) => { var f = new frmAbout(); f.ShowDialog(); });
+            AddCard("Add Vehicle", Theme.PrimaryColor, (s, e) => { var f = new frmAddVehicle(); f.MdiParent = this; f.Show(); });
+            AddCard("Manage Vehicles", Theme.PrimaryDark, (s, e) => { var f = new frmManageVehicles(); f.MdiParent = this; f.Show(); });
+            AddCard("Add Customer", Theme.SuccessColor, (s, e) => { var f = new frmAddCustomer(); f.MdiParent = this; f.Show(); });
+            AddCard("Manage Customers", Theme.PrimaryColor, (s, e) => { var f = new frmManageCustomers(); f.MdiParent = this; f.Show(); });
+            AddCard("Book Rental", Theme.AccentColor, (s, e) => { var f = new frmBookRental(); f.MdiParent = this; f.Show(); });
+            AddCard("Return Vehicle", Theme.DangerColor, (s, e) => { var f = new frmReturnVehicle(); f.MdiParent = this; f.Show(); });
+            AddCard("Maintenance", Theme.WarningColor, (s, e) => { var f = new frmMaintenanceExpenses(); f.MdiParent = this; f.Show(); });
+            AddCard("Rental History", Theme.PrimaryLight, (s, e) => { var f = new frmRentalHistory(); f.MdiParent = this; f.Show(); });
+            AddCard("Revenue Report", Theme.SuccessColor, (s, e) => { var f = new frmRevenueReport(); f.MdiParent = this; f.Show(); });
+            AddCard("Expense Report", Theme.AccentColor, (s, e) => { var f = new frmExpenseReport(); f.MdiParent = this; f.Show(); });
+            AddCard("Availability", Theme.PrimaryDark, (s, e) => { var f = new frmVehicleAvailability(); f.MdiParent = this; f.Show(); });
+            AddCard("Change Password", Theme.TextLight, (s, e) => { var f = new frmChangePassword(Program.CurrentUsername); f.ShowDialog(); });
+            AddCard("About", Theme.PrimaryColor, (s, e) => { var f = new frmAbout(); f.ShowDialog(); });
 
-            var btnExit = new Button { Text = "Exit", AutoSize = true, Margin = new Padding(5), Font = new Font("Segoe UI", 10F) };
-            btnExit.Click += (s, e) => Application.Exit();
-            panel.Controls.Add(btnExit);
+            var btnLogout = new Button
+            {
+                Text = "Logout",
+                AutoSize = true,
+                Margin = new Padding(8),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                BackColor = Theme.DangerColor,
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                Padding = new Padding(20, 12, 20, 12)
+            };
+            btnLogout.FlatAppearance.BorderSize = 0;
+            btnLogout.FlatAppearance.MouseOverBackColor = Color.FromArgb(200, 50, 60);
+            btnLogout.Click += (s, e) => Application.Exit();
+            panel.Controls.Add(btnLogout);
 
+            var menuPanel = new Panel { Dock = DockStyle.Top, AutoSize = true };
+            menuPanel.Controls.Add(menuStrip);
+            Controls.Add(menuPanel);
             Controls.Add(panel);
         }
     }

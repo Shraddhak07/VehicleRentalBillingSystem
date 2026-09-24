@@ -9,38 +9,64 @@ namespace VehicleRentalApp
     {
         private TextBox txtName, txtPhone, txtLicence;
         private Button btnAdd;
+        private Label lblTitle;
 
         public frmAddCustomer() => InitializeComponent();
 
         private void InitializeComponent()
         {
-            var tlp = new TableLayoutPanel { ColumnCount = 2, RowCount = 4, Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300));
+            lblTitle = new Label
+            {
+                Text = "Add Customer",
+                Font = Theme.TitleFont,
+                ForeColor = Theme.PrimaryColor,
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
 
-            tlp.Controls.Add(new Label { Text = "Name:", AutoSize = true }, 0, 0);
-            txtName = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtName, 1, 0);
+            var formPanel = new Panel
+            {
+                Size = new Size(500, 400),
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 500) / 2, (Screen.PrimaryScreen.Bounds.Height - 400) / 2),
+                BackColor = Theme.CardColor,
+                BorderStyle = BorderStyle.FixedSingle
+            };
 
-            tlp.Controls.Add(new Label { Text = "Phone:", AutoSize = true }, 0, 1);
-            txtPhone = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtPhone, 1, 1);
+            void AddInput(Label label, TextBox textBox, int y)
+            {
+                label.ForeColor = Theme.TextColor;
+                label.Font = Theme.HeadingFont;
+                label.AutoSize = true;
+                label.Location = new Point(40, y);
+                textBox.Width = 400;
+                textBox.Location = new Point(40, y + 35);
+                textBox.Font = Theme.BodyFont;
+                textBox.BorderStyle = BorderStyle.FixedSingle;
+                formPanel.Controls.Add(label);
+                formPanel.Controls.Add(textBox);
+            }
 
-            tlp.Controls.Add(new Label { Text = "Licence Number:", AutoSize = true }, 0, 2);
-            txtLicence = new TextBox { Width = 300 };
-            tlp.Controls.Add(txtLicence, 1, 2);
+            txtName = new TextBox();
+            txtPhone = new TextBox();
+            txtLicence = new TextBox();
 
-            btnAdd = new Button { Text = "Add Customer", Width = 150 };
+            AddInput(new Label { Text = "Name:" }, txtName, 80);
+            AddInput(new Label { Text = "Phone:" }, txtPhone, 155);
+            AddInput(new Label { Text = "Licence Number:" }, txtLicence, 230);
+
+            btnAdd = new Button { Text = "Add Customer", Width = 200, Location = new Point(150, 350) };
+            Theme.ApplyButtonStyle(btnAdd, Theme.SuccessColor);
+            btnAdd.FlatAppearance.MouseOverBackColor = Color.FromArgb(60, 180, 90);
             btnAdd.Click += BtnAdd_Click;
-            tlp.Controls.Add(btnAdd, 1, 3);
+            formPanel.Controls.Add(btnAdd);
 
-            Controls.Add(tlp);
-            Text = "Add Customer";
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            AcceptButton = btnAdd;
+            Controls.Add(formPanel);
+            Controls.Add(lblTitle);
+            Text = "Add Customer - Vehicle Rental";
+            StartPosition = FormStartPosition.Manual;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Theme.BackgroundColor;
+            WindowState = FormWindowState.Maximized;
         }
 
         private void BtnAdd_Click(object sender, EventArgs e)
@@ -54,7 +80,8 @@ namespace VehicleRentalApp
                 cmd.Parameters.AddWithValue("?", txtPhone.Text);
                 cmd.Parameters.AddWithValue("?", txtLicence.Text);
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Customer added successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Customer added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtName.Clear(); txtPhone.Clear(); txtLicence.Clear();
             }
             catch (Exception ex) { MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }

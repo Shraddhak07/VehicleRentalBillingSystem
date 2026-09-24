@@ -12,54 +12,95 @@ namespace VehicleRentalApp
         private TextBox txtCustomer, txtVehicle, txtRentDate, txtPlannedReturn, txtPerDayRate, txtTotal, txtLateFee;
         private DateTimePicker dtpActualReturn;
         private Button btnSelect, btnReturn;
+        private Label lblTitle;
 
         public frmReturnVehicle() => InitializeComponent();
 
         private void InitializeComponent()
         {
+            lblTitle = new Label
+            {
+                Text = "Return Vehicle",
+                Font = Theme.TitleFont,
+                ForeColor = Theme.PrimaryColor,
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
+
             dgv = new DataGridView
             {
                 Dock = DockStyle.Top,
-                Height = 200,
+                Height = 180,
                 ReadOnly = true,
                 AllowUserToAddRows = false,
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Theme.CardColor,
+                BorderStyle = BorderStyle.FixedSingle,
+                RowHeadersVisible = false,
+                AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.FromArgb(245, 247, 250) },
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle { BackColor = Theme.PrimaryColor, ForeColor = Color.White, Font = new Font("Segoe UI", 10F, FontStyle.Bold) }
             };
             dgv.SelectionChanged += Dgv_SelectionChanged;
 
-            var inputs = new TableLayoutPanel { ColumnCount = 2, RowCount = 8, Dock = DockStyle.Top, AutoSize = true, Padding = new Padding(10) };
-            inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 140));
-            inputs.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300));
-
-            void AddRow(string label, Control control, int row)
+            var inputs = new Panel
             {
-                inputs.Controls.Add(new Label { Text = label, AutoSize = true }, 0, row);
-                inputs.Controls.Add(control, 1, row);
+                Size = new Size(600, 420),
+                Location = new Point(20, 200),
+                BackColor = Theme.CardColor,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            void AddRow(string label, Control control, int y)
+            {
+                var lbl = new Label { Text = label, AutoSize = true, ForeColor = Theme.TextColor, Font = Theme.HeadingFont, Location = new Point(40, y) };
+                control.Location = new Point(40, y + 35);
+                inputs.Controls.Add(lbl);
+                inputs.Controls.Add(control);
             }
 
-            txtCustomer = new TextBox { Width = 300, ReadOnly = true }; AddRow("Customer:", txtCustomer, 0);
-            txtVehicle = new TextBox { Width = 300, ReadOnly = true }; AddRow("Vehicle:", txtVehicle, 1);
-            txtRentDate = new TextBox { Width = 300, ReadOnly = true }; AddRow("Rent Date:", txtRentDate, 2);
-            txtPlannedReturn = new TextBox { Width = 300, ReadOnly = true }; AddRow("Planned Return:", txtPlannedReturn, 3);
-            txtPerDayRate = new TextBox { Width = 300, ReadOnly = true }; AddRow("Per Day Rate:", txtPerDayRate, 4);
-            dtpActualReturn = new DateTimePicker { Width = 300, Value = DateTime.Today }; AddRow("Actual Return:", dtpActualReturn, 5);
-            txtLateFee = new TextBox { Width = 300, ReadOnly = true }; AddRow("Late Fee:", txtLateFee, 6);
-            txtTotal = new TextBox { Width = 300, ReadOnly = true }; AddRow("Total:", txtTotal, 7);
+            txtCustomer = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            txtVehicle = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            txtRentDate = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            txtPlannedReturn = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            txtPerDayRate = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            dtpActualReturn = new DateTimePicker { Width = 500, Value = DateTime.Today, Font = Theme.BodyFont };
+            txtLateFee = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle, BackColor = Color.FromArgb(255, 250, 240) };
+            txtTotal = new TextBox { Width = 500, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle, BackColor = Color.FromArgb(240, 255, 240) };
 
-            btnSelect = new Button { Text = "Select Rental", Width = 150 };
-            btnReturn = new Button { Text = "Process Return", Width = 150 };
+            AddRow("Customer:", txtCustomer, 30);
+            AddRow("Vehicle:", txtVehicle, 85);
+            AddRow("Rent Date:", txtRentDate, 140);
+            AddRow("Planned Return:", txtPlannedReturn, 195);
+            AddRow("Per Day Rate:", txtPerDayRate, 250);
+            AddRow("Actual Return:", dtpActualReturn, 305);
+            AddRow("Late Fee:", txtLateFee, 360);
+            AddRow("Total:", txtTotal, 415);
+
+            btnSelect = new Button { Text = "Select Rental", Width = 160, Location = new Point(40, 470) };
+            btnSelect.FlatStyle = FlatStyle.Flat;
+            Theme.ApplyButtonStyle(btnSelect, Theme.PrimaryColor);
+            btnSelect.FlatAppearance.MouseOverBackColor = Theme.PrimaryLight;
+
+            btnReturn = new Button { Text = "Process Return", Width = 180, Location = new Point(220, 470) };
+            btnReturn.FlatStyle = FlatStyle.Flat;
+            Theme.ApplyButtonStyle(btnReturn, Theme.DangerColor);
+            btnReturn.FlatAppearance.MouseOverBackColor = Color.FromArgb(200, 50, 60);
             btnReturn.Click += BtnReturn_Click;
-            var btnPanel = new FlowLayoutPanel { AutoSize = true, Controls = { btnSelect, btnReturn } };
-            inputs.Controls.Add(btnPanel, 1, 8);
 
+            var btnPanel = new Panel { Dock = DockStyle.Top, AutoSize = true };
+            btnPanel.Controls.Add(btnSelect);
+            btnPanel.Controls.Add(btnReturn);
+            inputs.Controls.Add(btnPanel);
+
+            Controls.Add(lblTitle);
             Controls.Add(dgv);
             Controls.Add(inputs);
-            Text = "Return Vehicle";
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
+            Text = "Return Vehicle - Vehicle Rental";
+            StartPosition = FormStartPosition.Manual;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Theme.BackgroundColor;
+            WindowState = FormWindowState.Maximized;
             LoadRentals();
         }
 
@@ -130,7 +171,7 @@ namespace VehicleRentalApp
                     }
 
                     txn.Commit();
-                    MessageBox.Show("Return processed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Return processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadRentals();
                 }
                 catch (Exception) { txn?.Rollback(); throw; }

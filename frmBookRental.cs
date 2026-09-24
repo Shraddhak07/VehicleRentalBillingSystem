@@ -14,70 +14,87 @@ namespace VehicleRentalApp
         private TextBox txtRate, txtTotal;
         private DataGridView dgvSummary;
         private Button btnCalculate, btnBookNow;
+        private Label lblTitle;
 
         public frmBookRental() => InitializeComponent();
 
         private void InitializeComponent()
         {
+            lblTitle = new Label
+            {
+                Text = "Book Rental",
+                Font = Theme.TitleFont,
+                ForeColor = Theme.PrimaryColor,
+                AutoSize = true,
+                Location = new Point(20, 20)
+            };
+
             dtCustomers = DatabaseHelper.GetAllCustomers();
             dtVehicles = DatabaseHelper.GetAvailableVehicles();
 
-            var tlp = new TableLayoutPanel
+            var formPanel = new Panel
             {
-                ColumnCount = 2,
-                RowCount = 7,
-                Dock = DockStyle.Top,
-                AutoSize = true,
-                Padding = new Padding(10)
+                Size = new Size(700, 500),
+                Location = new Point((Screen.PrimaryScreen.Bounds.Width - 700) / 2, (Screen.PrimaryScreen.Bounds.Height - 500) / 2),
+                BackColor = Theme.CardColor,
+                BorderStyle = BorderStyle.FixedSingle
             };
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120));
-            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 300));
 
-            void AddLabelControl(string labelText, Control control, int row)
+            void AddInput(Label label, Control control, int y)
             {
-                tlp.Controls.Add(new Label { Text = labelText, AutoSize = true }, 0, row);
-                tlp.Controls.Add(control, 1, row);
+                label.ForeColor = Theme.TextColor;
+                label.Font = Theme.HeadingFont;
+                label.AutoSize = true;
+                label.Location = new Point(40, y);
+                control.Location = new Point(40, y + 35);
+                formPanel.Controls.Add(label);
+                formPanel.Controls.Add(control);
             }
 
-            cmbCustomer = new ComboBox { Width = 300, DropDownStyle = ComboBoxStyle.DropDownList, DataSource = dtCustomers, DisplayMember = "Name", ValueMember = "CustomerID" };
-            AddLabelControl("Customer:", cmbCustomer, 0);
-
-            cmbVehicle = new ComboBox { Width = 300, DropDownStyle = ComboBoxStyle.DropDownList, DataSource = dtVehicles, DisplayMember = "VehicleName", ValueMember = "VehicleID" };
+            cmbCustomer = new ComboBox { Width = 400, DropDownStyle = ComboBoxStyle.DropDownList, DataSource = dtCustomers, DisplayMember = "Name", ValueMember = "CustomerID", Font = Theme.BodyFont };
+            cmbVehicle = new ComboBox { Width = 400, DropDownStyle = ComboBoxStyle.DropDownList, DataSource = dtVehicles, DisplayMember = "VehicleName", ValueMember = "VehicleID", Font = Theme.BodyFont };
             cmbVehicle.SelectedIndexChanged += CmbVehicle_SelectedIndexChanged;
-            AddLabelControl("Vehicle:", cmbVehicle, 1);
 
-            dtpRent = new DateTimePicker { Width = 300, Value = DateTime.Today };
-            dtpRent.ValueChanged += (s, e) => CalculateTotal();
-            AddLabelControl("Rent Date:", dtpRent, 2);
-
-            dtpReturn = new DateTimePicker { Width = 300, Value = DateTime.Today.AddDays(3) };
+            dtpRent = new DateTimePicker { Width = 400, Value = DateTime.Today, Font = Theme.BodyFont };
+            dtpReturn = new DateTimePicker { Width = 400, Value = DateTime.Today.AddDays(3), Font = Theme.BodyFont };
             dtpReturn.ValueChanged += (s, e) => CalculateTotal();
-            AddLabelControl("Return Date:", dtpReturn, 3);
 
-            txtRate = new TextBox { Width = 300, ReadOnly = true };
-            AddLabelControl("Per Day Rate:", txtRate, 4);
+            txtRate = new TextBox { Width = 400, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle };
+            txtTotal = new TextBox { Width = 400, ReadOnly = true, Font = Theme.BodyFont, BorderStyle = BorderStyle.FixedSingle, BackColor = Color.FromArgb(240, 255, 240) };
 
-            txtTotal = new TextBox { Width = 300, ReadOnly = true };
-            AddLabelControl("Total Amount:", txtTotal, 5);
+            AddInput(new Label { Text = "Customer:" }, cmbCustomer, 80);
+            AddInput(new Label { Text = "Vehicle:" }, cmbVehicle, 140);
+            AddInput(new Label { Text = "Rent Date:" }, dtpRent, 200);
+            AddInput(new Label { Text = "Return Date:" }, dtpReturn, 260);
+            AddInput(new Label { Text = "Per Day Rate:" }, txtRate, 320);
+            AddInput(new Label { Text = "Total Amount:" }, txtTotal, 380);
 
-            btnCalculate = new Button { Text = "Calculate", Width = 120 };
+            btnCalculate = new Button { Text = "Calculate", Width = 140, Location = new Point(40, 430) };
+            btnCalculate.FlatStyle = FlatStyle.Flat;
+            Theme.ApplyButtonStyle(btnCalculate, Theme.PrimaryLight);
+            btnCalculate.FlatAppearance.MouseOverBackColor = Theme.PrimaryColor;
             btnCalculate.Click += (s, e) => CalculateTotal();
-            btnBookNow = new Button { Text = "Book Rental", Width = 150 };
-            btnBookNow.Click += BtnBookNow_Click;
-            var btnPanel = new FlowLayoutPanel { AutoSize = true, Controls = { btnCalculate, btnBookNow } };
-            tlp.Controls.Add(btnPanel, 1, 6);
 
-            dgvSummary = new DataGridView { ReadOnly = true, AllowUserToAddRows = false, SelectionMode = DataGridViewSelectionMode.FullRowSelect, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill, Width = 620 };
+            btnBookNow = new Button { Text = "Book Rental", Width = 180, Location = new Point(200, 430) };
+            btnBookNow.FlatStyle = FlatStyle.Flat;
+            Theme.ApplyButtonStyle(btnBookNow, Theme.SuccessColor);
+            btnBookNow.FlatAppearance.MouseOverBackColor = Color.FromArgb(60, 180, 90);
+            btnBookNow.Click += BtnBookNow_Click;
+
+            dgvSummary = new DataGridView { ReadOnly = true, AllowUserToAddRows = false, SelectionMode = DataGridViewSelectionMode.FullRowSelect, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill, Width = 620, Location = new Point(40, 480), Height = 0, BorderStyle = BorderStyle.FixedSingle };
             LoadSummary();
 
-            Controls.Add(tlp);
-            Controls.Add(dgvSummary);
-            Text = "Book Rental";
-            StartPosition = FormStartPosition.CenterParent;
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
-            MinimizeBox = false;
-            AcceptButton = btnBookNow;
+            formPanel.Controls.Add(btnCalculate);
+            formPanel.Controls.Add(btnBookNow);
+            formPanel.Controls.Add(dgvSummary);
+
+            Controls.Add(formPanel);
+            Controls.Add(lblTitle);
+            Text = "Book Rental - Vehicle Rental";
+            StartPosition = FormStartPosition.Manual;
+            FormBorderStyle = FormBorderStyle.None;
+            BackColor = Theme.BackgroundColor;
+            WindowState = FormWindowState.Maximized;
         }
 
         private void CmbVehicle_SelectedIndexChanged(object sender, EventArgs e)
@@ -91,7 +108,7 @@ namespace VehicleRentalApp
         {
             try
             {
-                var rate = Convert.ToDecimal(cmbVehicle.SelectedItem is DataRowView row ? row["PerDayRate"] : 0);
+                var rate = cmbVehicle.SelectedItem is DataRowView row ? Convert.ToDecimal(row["PerDayRate"]) : 0m;
                 var days = (dtpReturn.Value - dtpRent.Value).Days;
                 txtTotal.Text = days > 0 ? (days * rate).ToString("C") : "0.00";
             }
@@ -117,7 +134,7 @@ namespace VehicleRentalApp
             {
                 var customerId = Convert.ToInt32(cmbCustomer.SelectedValue);
                 var vehicleId = Convert.ToInt32(cmbVehicle.SelectedValue);
-                var rate = Convert.ToDecimal(cmbVehicle.SelectedItem is DataRowView row ? row["PerDayRate"] : 0);
+                var rate = cmbVehicle.SelectedItem is DataRowView row ? Convert.ToDecimal(row["PerDayRate"]) : 0m;
                 var days = (dtpReturn.Value - dtpRent.Value).Days;
                 var total = days * rate;
 
@@ -148,20 +165,13 @@ namespace VehicleRentalApp
                     }
 
                     txn.Commit();
-                    MessageBox.Show($"Rental booked successfully. Total: {total:C}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Rental booked! Total: {total:C}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     LoadSummary();
                 }
-                catch (Exception)
-                {
-                    txn?.Rollback();
-                    throw;
-                }
+                catch (Exception) { txn?.Rollback(); throw; }
                 finally { conn?.Close(); }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Booking failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            catch (Exception ex) { MessageBox.Show("Booking failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); }
         }
     }
 }
